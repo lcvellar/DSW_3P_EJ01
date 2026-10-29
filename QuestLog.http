@@ -1,0 +1,49 @@
+@baseUrl = http://localhost:5186
+
+### Consultar todas las misiones
+GET {{baseUrl}}/api/misiones
+
+### Registrar misión
+POST {{baseUrl}}/api/misiones
+Content-Type: application/json
+
+{
+  "nombre": "Rescatar al explorador",
+  "dificultad": "Media",
+  "recompensaXP": 250,
+  "completada": true
+}
+
+### Consultar por ID
+GET {{baseUrl}}/api/misiones/1
+
+### Actualizar misión
+PUT {{baseUrl}}/api/misiones/1
+Content-Type: application/json
+
+{
+  "nombre": "Rescatar al explorador",
+  "dificultad": "Difícil",
+  "recompensaXP": 400,
+  "completada": true
+}
+
+### Validación: XP negativo (400)
+POST {{baseUrl}}/api/misiones
+Content-Type: application/json
+
+{
+  "nombre": "Misión inválida",
+  "dificultad": "Fácil",
+  "recompensaXP": -10,
+  "completada": false
+}
+
+### Consultar misión inexistente (404)
+GET {{baseUrl}}/api/misiones/999
+
+### Eliminar misión
+DELETE {{baseUrl}}/api/misiones/1
+
+### Documento OpenAPI (solo entorno Development)
+GET {{baseUrl}}/openapi/v1.json
