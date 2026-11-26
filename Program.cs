@@ -70,17 +70,16 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() ||
+    app.Configuration.GetValue<bool>("Swagger:Enabled"))
 {
     app.MapOpenApi();
 
-    // Habilita Swagger UI
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint(
             "/openapi/v1.json",
-            "QuestLog API v1"
-        );
+            "QuestLog API v1");
     });
 }
 
