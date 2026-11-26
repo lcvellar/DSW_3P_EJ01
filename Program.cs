@@ -52,16 +52,17 @@ builder.Services
    });
 
 //CONFIGURAR POLÍTICA DE CORS
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() ?? Array.Empty<string>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("QuestLogFrontend", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:5500",
-                "http://127.0.0.1:5500"
-            )
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 
