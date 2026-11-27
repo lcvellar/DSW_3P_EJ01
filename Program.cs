@@ -52,25 +52,24 @@ builder.Services
    });
 
 //CONFIGURAR POLÍTICA DE CORS
-var allowedOrigins = builder.Configuration
-    .GetSection("Cors:AllowedOrigins")
-    .Get<string[]>() ?? Array.Empty<string>();
-
-builder.Services.AddCors(options =>
+// CONFIGURACIÓN DEL PROXY INVERSO
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.AddPolicy("QuestLogFrontend", policy =>
-    {
-        policy.WithOrigins(allowedOrigins)
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
 });
+
 
 builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
 
+// PROCESAR ENCABEZADOS DEL PROXY
+app.UseForwardedHeaders();
+
+// HABILITAR SWAGGER
 if (app.Environment.IsDevelopment() ||
     app.Configuration.GetValue<bool>("Swagger:Enabled"))
 {
@@ -84,6 +83,8 @@ if (app.Environment.IsDevelopment() ||
     });
 }
 
+// MIDDLEWARE
+app.UseRouting();
 app.UseCors("QuestLogFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
